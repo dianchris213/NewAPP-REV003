@@ -199,22 +199,39 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return { totalIncome: income, totalExpense: expense };
   }, [transactions]);
 
-  const value: AppState = {
-    hydrated,
-    user,
-    authLoading,
-    transactions,
-    settings,
-    addTxOpen,
-    login,
-    logout,
-    addTransaction,
-    toggleSetting,
-    setAddTxOpen,
-    balance: totalIncome - totalExpense,
-    totalIncome,
-    totalExpense,
-  };
+  // Stable context value: consumers only re-render when real data changes.
+  const value = useMemo<AppState>(
+    () => ({
+      hydrated,
+      user,
+      authLoading,
+      transactions,
+      settings,
+      addTxOpen,
+      login,
+      logout,
+      addTransaction,
+      toggleSetting,
+      setAddTxOpen,
+      balance: totalIncome - totalExpense,
+      totalIncome,
+      totalExpense,
+    }),
+    [
+      hydrated,
+      user,
+      authLoading,
+      transactions,
+      settings,
+      addTxOpen,
+      login,
+      logout,
+      addTransaction,
+      toggleSetting,
+      totalIncome,
+      totalExpense,
+    ],
+  );
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
