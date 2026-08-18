@@ -53,13 +53,13 @@ function daysUntil(dueDay: number) {
 
 function Home() {
   const { user, transactions, balance, totalIncome, totalExpense, setAddTxOpen } = useApp();
-  const [expanded, setExpanded] = useState(false);
+  const [allOpen, setAllOpen] = useState(false);
   const pocketStrip = useDragScroll<HTMLDivElement>();
-  const visible = useMemo(
-    () => (expanded ? transactions : transactions.slice(0, RECENT_LIMIT)),
-    [transactions, expanded],
-  );
+  const visible = useMemo(() => transactions.slice(0, RECENT_LIMIT), [transactions]);
   const hidden = Math.max(transactions.length - RECENT_LIMIT, 0);
+  const openAll = useCallback(() => setAllOpen(true), []);
+  const closeAll = useCallback(() => setAllOpen(false), []);
+  const openAddTx = useCallback(() => setAddTxOpen(true), [setAddTxOpen]);
 
   return (
     <AppShell topBar={<TopBar eyebrow="Selamat datang" title={user?.name ?? "Pengguna"} />}>
