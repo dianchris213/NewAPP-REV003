@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useApp, type TxType } from "@/lib/app-store";
 import { Icon } from "./Icon";
 
@@ -7,20 +7,27 @@ const categories: Record<TxType, string[]> = {
   expense: ["Makanan", "Transport", "Tagihan", "Belanja", "Hiburan", "Lainnya"],
 };
 
+const NOTE_MAX = 80;
+
 export function AddTransactionSheet() {
   const { addTxOpen, setAddTxOpen, addTransaction } = useApp();
   const [type, setType] = useState<TxType>("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("Makanan");
   const [note, setNote] = useState("");
+  const [noteError, setNoteError] = useState(false);
+
+  const close = useCallback(() => setAddTxOpen(false), [setAddTxOpen]);
 
   if (!addTxOpen) return null;
 
   const numeric = Number(amount.replace(/\D/g, ""));
+  const trimmedNote = note.trim();
 
   const reset = () => {
     setAmount("");
     setNote("");
+    setNoteError(false);
     setType("expense");
     setCategory("Makanan");
   };
@@ -28,7 +35,11 @@ export function AddTransactionSheet() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!numeric) return;
-    addTransaction({ type, amount: numeric, category, note: note.trim() });
+    if (!trimmedNote) {
+      setNoteError(true);
+      return;
+    }
+    addTransaction({ type, amount: numeric, category, note: trimmedNote.slice(0, NOTE_MAX) });
     reset();
     setAddTxOpen(false);
   };
