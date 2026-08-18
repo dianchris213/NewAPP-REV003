@@ -96,22 +96,13 @@ function Home() {
           className="swipe-x flex cursor-grab gap-3 pb-1 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
         >
           {pockets.map((p) => (
-            <button
+            <PocketCard
               key={p.name}
-              type="button"
-              role="listitem"
-              onClick={() => setAddTxOpen(true)}
-              aria-label={`Kantong ${p.name}, saldo ${formatIDR(balance * p.share)}`}
-              className="glass-card min-w-[150px] shrink-0 rounded-[18px] p-4 text-left transition-transform active:scale-[0.98]"
-            >
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-variant text-primary">
-                <Icon name={p.icon} className="text-[18px]" />
-              </span>
-              <p className="mt-3 text-meta text-on-surface-variant">{p.name}</p>
-              <p className="text-body font-semibold text-on-surface">
-                {formatIDR(balance * p.share)}
-              </p>
-            </button>
+              name={p.name}
+              icon={p.icon}
+              amount={balance * p.share}
+              onOpen={openAddTx}
+            />
           ))}
         </div>
       </Section>
