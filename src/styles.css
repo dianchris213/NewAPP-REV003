@@ -168,11 +168,17 @@
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  touch-action: pan-x;
+  /* pan-x + pan-y: horizontal swipe works, vertical page scroll still works,
+     and taps/clicks on children are never swallowed by a gesture. */
+  touch-action: pan-x pan-y;
   overscroll-behavior-x: contain;
+  overscroll-behavior-y: auto;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* keep compositing cheap on narrow/low-end devices */
+  will-change: scroll-position;
+  scrollbar-gutter: stable;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
@@ -180,6 +186,13 @@
   }
   & > * {
     scroll-snap-align: start;
+    /* remove the 300ms tap delay so nested buttons feel instant */
+    touch-action: manipulation;
+  }
+  & button,
+  & a,
+  & [role="button"] {
+    touch-action: manipulation;
   }
 }
 
