@@ -136,19 +136,40 @@ export function AddTransactionSheet() {
         </div>
 
         <label className="text-label uppercase text-on-surface-variant" htmlFor="tx-note">
-          Catatan
+          Catatan Singkat
         </label>
         <input
           id="tx-note"
           value={note}
-          onChange={(e) => setNote(e.target.value)}
-          placeholder="Opsional"
-          className="mt-1 mb-5 w-full rounded-[16px] border border-outline-variant/30 bg-surface-container-low px-4 py-3 text-sm text-on-surface outline-none placeholder:text-outline"
+          required
+          maxLength={NOTE_MAX}
+          aria-invalid={noteError}
+          aria-describedby="tx-note-help"
+          onChange={(e) => {
+            setNote(e.target.value);
+            if (noteError) setNoteError(false);
+          }}
+          placeholder={
+            type === "income" ? "Contoh: Gaji bulan ini" : "Contoh: Bensin motor harian"
+          }
+          className={`mt-1 w-full rounded-[16px] border bg-surface-container-low px-4 py-3 text-sm text-on-surface outline-none placeholder:text-outline ${
+            noteError ? "border-error" : "border-outline-variant/30"
+          }`}
         />
+        <p
+          id="tx-note-help"
+          className={`mt-1 mb-5 text-[11px] ${
+            noteError ? "text-error" : "text-on-surface-variant/70"
+          }`}
+        >
+          {noteError
+            ? "Catatan singkat wajib diisi."
+            : `Wajib: alasan ${type === "income" ? "pemasukan" : "pengeluaran"} ini.`}
+        </p>
 
         <button
           type="submit"
-          disabled={!numeric}
+          disabled={!numeric || !trimmedNote}
           className="gradient-primary flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-sm font-bold text-on-primary-container shadow-glow disabled:opacity-40"
         >
           <Icon name="check" className="text-[20px]" /> Simpan Transaksi
