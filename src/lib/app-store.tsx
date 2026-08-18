@@ -120,16 +120,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setHydrated(true);
   }, []);
 
+  // Persist off the render path and coalesced, so rapid state updates never
+  // block the UI with repeated JSON serialization.
   useEffect(() => {
     if (!hydrated) return;
-    try {
-      window.localStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify({ user, transactions, settings }),
-      );
-    } catch {
-      /* ignore quota errors */
-    }
+    const id = window.setTimeout(() => {
+      try {
+        window.localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify({ user, transactions, settings }),
+        );
+      } catch {
+        /* ignore quota errors */
+      }
+    }, 250);
+    return () => window.clearTimeout(id);
   }, [hydrated, user, transactions, settings]);
 
   // Apply the theme switch to the document so the toggle is visually real.
