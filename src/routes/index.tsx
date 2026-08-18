@@ -167,16 +167,12 @@ function Home() {
           hidden > 0 ? (
             <button
               type="button"
-              onClick={() => setExpanded((v) => !v)}
-              aria-expanded={expanded}
-              aria-controls="recent-transactions"
+              onClick={openAll}
+              aria-haspopup="dialog"
               className="flex items-center gap-1 rounded-full border border-outline-variant/30 px-3 py-1 text-meta text-on-surface-variant/80"
             >
-              {expanded ? "Tampilkan Lebih Sedikit" : `Lihat Semua (${hidden})`}
-              <Icon
-                name={expanded ? "expand_less" : "expand_more"}
-                className="text-[16px]"
-              />
+              {`Lihat Semua (${hidden})`}
+              <Icon name="chevron_right" className="text-[16px]" />
             </button>
           ) : (
             <span className="rounded-full border border-outline-variant/30 px-3 py-1 text-meta text-on-surface-variant/80">
@@ -197,6 +193,8 @@ function Home() {
           )}
         </div>
       </Section>
+
+      <AllTransactionsSheet open={allOpen} onClose={closeAll} items={transactions} />
     </AppShell>
   );
 }
